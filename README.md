@@ -2,6 +2,8 @@
 
 A mobile-first D&D 5e/2024 character sheet — your character in your pocket.
 
+> **Last updated:** April 2026 · [Live Demo →](https://trooll32.github.io/DnD-sheet/)
+
 ## Architecture
 
 ```
@@ -39,3 +41,7 @@ src/
 - [ ] Phase 1.0 — Spells tab + slot tracker
 - [ ] Phase 1.1 — Inventory
 - [ ] Phase 1.2 — Roll history drawer + dice log
+
+## Getting Started
+
+Открой `index.html` в браузере или перейди по [ссылке на GitHub Pages](https://trooll32.github.io/DnD-sheet/).
