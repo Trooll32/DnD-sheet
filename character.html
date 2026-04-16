@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Character Sheet</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d1117; color: #c9d1d9; padding: 1rem; }
+    .container { max-width: 600px; margin: 0 auto; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    h1 { font-size: 1.75rem; }
+    .btn { background: #238636; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; cursor: pointer; text-decoration: none; display: inline-block; }
+    .btn:hover { background: #2ea043; }
+    .btn-secondary { background: #21262d; }
+    .btn-secondary:hover { background: #30363d; }
+    .card { background: #161b22; padding: 1.25rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid #30363d; }
+    .card h2 { margin-bottom: 1rem; font-size: 1.1rem; color: #58a6ff; }
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
+    .stat { background: #0d1117; padding: 0.75rem; border-radius: 6px; text-align: center; }
+    .stat-label { font-size: 0.7rem; text-transform: uppercase; color: #8b949e; margin-bottom: 0.25rem; }
+    .stat-value { font-size: 1.5rem; font-weight: bold; }
+    .stat-mod { font-size: 0.9rem; color: #8b949e; }
+    .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+    .info-item { background: #0d1117; padding: 0.75rem; border-radius: 6px; }
+    .info-label { font-size: 0.75rem; text-transform: uppercase; color: #8b949e; margin-bottom: 0.25rem; }
+    .info-value { font-size: 1.1rem; font-weight: 600; }
+    .hp-bar { background: #0d1117; height: 60px; border-radius: 6px; position: relative; overflow: hidden; margin-bottom: 0.5rem; }
+    .hp-fill { background: linear-gradient(90deg, #238636 0%, #2ea043 100%); height: 100%; transition: width 0.3s; }
+    .hp-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.5rem; font-weight: bold; z-index: 1; }
+    .controls { display: flex; gap: 0.5rem; }
+    .control-btn { flex: 1; padding: 0.75rem; background: #21262d; border: 1px solid #30363d; color: #c9d1d9; border-radius: 6px; cursor: pointer; font-size: 1rem; }
+    .control-btn:hover { background: #30363d; }
+    .skills-list { display: grid; gap: 0.5rem; }
+    .skill { background: #0d1117; padding: 0.5rem 0.75rem; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
+    .skill-name { font-size: 0.9rem; }
+    .skill-value { font-weight: bold; }
+    .empty-state { text-align: center; padding: 2rem; color: #8b949e; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 id="character-name">...</h1>
+      <a href="index.html" class="btn btn-secondary">Назад</a>
+    </div>
+
+    <div id="character-content" style="display:none;">
+      <div class="card">
+        <h2>Здоровье</h2>
+        <div class="hp-bar">
+          <div class="hp-fill" id="hp-fill"></div>
+          <div class="hp-text" id="hp-text">10 / 10</div>
+        </div>
+        <div class="controls">
+          <button class="control-btn" onclick="adjustHP(-1)">-1</button>
+          <button class="control-btn" onclick="adjustHP(-5)">-5</button>
+          <button class="control-btn" onclick="adjustHP(5)">+5</button>
+          <button class="control-btn" onclick="adjustHP(1)">+1</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Основные характеристики</h2>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-label">Класс</div><div class="info-value" id="class-name">-</div></div>
+          <div class="info-item"><div class="info-label">Уровень</div><div class="info-value" id="level">1</div></div>
+          <div class="info-item"><div class="info-label">AC</div><div class="info-value" id="ac">10</div></div>
+          <div class="info-item"><div class="info-label">Initiative</div><div class="info-value" id="initiative">+0</div></div>
+          <div class="info-item"><div class="info-label">Prof. Bonus</div><div class="info-value" id="prof-bonus">+2</div></div>
+          <div class="info-item"><div class="info-label">Speed</div><div class="info-value" id="speed">30</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Характеристики</h2>
+        <div class="stats-grid">
+          <div class="stat"><div class="stat-label">STR</div><div class="stat-value" id="str-score">10</div><div class="stat-mod" id="str-mod">+0</div></div>
+          <div class="stat"><div class="stat-label">DEX</div><div class="stat-value" id="dex-score">10</div><div class="stat-mod" id="dex-mod">+0</div></div>
+          <div class="stat"><div class="stat-label">CON</div><div class="stat-value" id="con-score">10</div><div class="stat-mod" id="con-mod">+0</div></div>
+          <div class="stat"><div class="stat-label">INT</div><div class="stat-value" id="int-score">10</div><div class="stat-mod" id="int-mod">+0</div></div>
+          <div class="stat"><div class="stat-label">WIS</div><div class="stat-value" id="wis-score">10</div><div class="stat-mod" id="wis-mod">+0</div></div>
+          <div class="stat"><div class="stat-label">CHA</div><div class="stat-value" id="cha-score">10</div><div class="stat-mod" id="cha-mod">+0</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Навыки</h2>
+        <div class="skills-list" id="skills-list"></div>
+      </div>
+    </div>
+
+    <div id="empty-state" class="card empty-state">
+      <p>Персонаж не найден</p>
+      <br>
+      <a href="index.html" class="btn">Создать персонажа</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { SKILLS } from './src/engine/compendium.js';
+
+    function getMod(score) {
+      return Math.floor((score - 10) / 2);
+    }
+
+    function formatMod(value) {
+      return value >= 0 ? `+${value}` : `${value}`;
+    }
+
+    function loadCharacter() {
+      const saved = localStorage.getItem('dnd-character');
+      if (!saved) {
+        document.getElementById('empty-state').style.display = 'block';
+        return null;
+      }
+
+      const character = JSON.parse(saved);
+      document.getElementById('empty-state').style.display = 'none';
+      document.getElementById('character-content').style.display = 'block';
+      return character;
+    }
+
+    function saveCharacter(character) {
+      localStorage.setItem('dnd-character', JSON.stringify(character));
+    }
+
+    function renderCharacter(character) {
+      document.getElementById('character-name').textContent = character.name || 'Unnamed';
+      document.getElementById('class-name').textContent = character.class || '-';
+      document.getElementById('level').textContent = character.level || 1;
+
+      const abilities = character.abilities || {};
+      ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach(ability => {
+        const score = abilities[ability] || 10;
+        const mod = getMod(score);
+        document.getElementById(`${ability}-score`).textContent = score;
+        document.getElementById(`${ability}-mod`).textContent = formatMod(mod);
+      });
+
+      const dexMod = getMod(abilities.dex || 10);
+      const conMod = getMod(abilities.con || 10);
+      const wisMod = getMod(abilities.wis || 10);
+      const level = character.level || 1;
+      const profBonus = Math.ceil(level / 4) + 1;
+
+      const ac = 10 + dexMod;
+      const initiative = dexMod;
+      const hpMax = (character.class === 'Fighter' ? 10 : 8) + conMod;
+      const hpCurrent = character.hpCurrent !== undefined ? character.hpCurrent : hpMax;
+
+      document.getElementById('ac').textContent = ac;
+      document.getElementById('initiative').textContent = formatMod(initiative);
+      document.getElementById('prof-bonus').textContent = formatMod(profBonus);
+      document.getElementById('speed').textContent = '30';
+
+      character.hpMax = hpMax;
+      character.hpCurrent = hpCurrent;
+      updateHP(character);
+
+      const skillsList = document.getElementById('skills-list');
+      skillsList.innerHTML = '';
+      SKILLS.forEach(skill => {
+        const abilityMod = getMod(abilities[skill.ability] || 10);
+        const skillValue = abilityMod;
+        const skillEl = document.createElement('div');
+        skillEl.className = 'skill';
+        skillEl.innerHTML = `<span class="skill-name">${skill.name}</span><span class="skill-value">${formatMod(skillValue)}</span>`;
+        skillsList.appendChild(skillEl);
+      });
+    }
+
+    function updateHP(character) {
+      const percent = (character.hpCurrent / character.hpMax) * 100;
+      document.getElementById('hp-fill').style.width = `${percent}%`;
+      document.getElementById('hp-text').textContent = `${character.hpCurrent} / ${character.hpMax}`;
+      saveCharacter(character);
+    }
+
+    window.adjustHP = function(amount) {
+      const character = loadCharacter();
+      if (!character) return;
+      character.hpCurrent = Math.max(0, Math.min(character.hpMax, character.hpCurrent + amount));
+      updateHP(character);
+    };
+
+    const character = loadCharacter();
+    if (character) {
+      renderCharacter(character);
+    }
+  </script>
+</body>
+</html>
