@@ -46,3 +46,45 @@ export const CLASSES = [
   { name: 'Wizard',     hitDie: 'd6',  saveProficiencies: ['int', 'wis'], spellcastingAbility: 'int' },
   { name: 'Artificer',  hitDie: 'd8',  saveProficiencies: ['con', 'int'], spellcastingAbility: 'int' },
 ];
+
+export const SPECIES = [
+  { name: 'Human', size: 'M', speed: 30 },
+  { name: 'Dwarf', size: 'M', speed: 30 },
+  { name: 'Elf', size: 'M', speed: 30 },
+  { name: 'Halfling', size: 'S', speed: 30 },
+  { name: 'Dragonborn', size: 'M', speed: 30 },
+  { name: 'Gnome', size: 'S', speed: 30 },
+  { name: 'Half-Elf', size: 'M', speed: 30 },
+  { name: 'Half-Orc', size: 'M', speed: 30 },
+  { name: 'Tiefling', size: 'M', speed: 30 },
+];
+
+export const BACKGROUNDS = [
+  { name: 'Acolyte' },
+  { name: 'Criminal' },
+  { name: 'Folk Hero' },
+  { name: 'Noble' },
+  { name: 'Sage' },
+  { name: 'Soldier' },
+];
+
+export const SKILLS = [
+  { id: 'athletics', name: 'Athletics', ability: 'str' },
+  { id: 'acrobatics', name: 'Acrobatics', ability: 'dex' },
+  { id: 'sleightOfHand', name: 'Sleight of Hand', ability: 'dex' },
+  { id: 'stealth', name: 'Stealth', ability: 'dex' },
+  { id: 'arcana', name: 'Arcana', ability: 'int' },
+  { id: 'history', name: 'History', ability: 'int' },
+  { id: 'investigation', name: 'Investigation', ability: 'int' },
+  { id: 'nature', name: 'Nature', ability: 'int' },
+  { id: 'religion', name: 'Religion', ability: 'int' },
+  { id: 'animalHandling', name: 'Animal Handling', ability: 'wis' },
+  { id: 'insight', name: 'Insight', ability: 'wis' },
+  { id: 'medicine', name: 'Medicine', ability: 'wis' },
+  { id: 'perception', name: 'Perception', ability: 'wis' },
+  { id: 'survival', name: 'Survival', ability: 'wis' },
+  { id: 'deception', name: 'Deception', ability: 'cha' },
+  { id: 'intimidation', name: 'Intimidation', ability: 'cha' },
+  { id: 'performance', name: 'Performance', ability: 'cha' },
+  { id: 'persuasion', name: 'Persuasion', ability: 'cha' },
+];
