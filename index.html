@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DnD Character Builder</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d1117; color: #c9d1d9; padding: 1rem; }
+    h1 { margin-bottom: 1rem; }
+    .step { background: #161b22; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid #30363d; }
+    label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
+    input, select { width: 100%; padding: 0.75rem; background: #0d1117; border: 1px solid #30363d; color: #c9d1d9; border-radius: 6px; font-size: 1rem; margin-bottom: 1rem; }
+    button { background: #238636; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; font-size: 1rem; cursor: pointer; width: 100%; margin-top: 0.5rem; }
+    button:hover { background: #2ea043; }
+    .result { background: #161b22; padding: 1.5rem; border-radius: 8px; border: 1px solid #30363d; white-space: pre-wrap; font-family: monospace; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <h1>⚔️ DnD Character Builder v1</h1>
+  
+  <div class="step">
+    <h2>Создание персонажа</h2>
+    <label>Имя персонажа</label>
+    <input type="text" id="name" placeholder="Aragorn" />
+    
+    <label>Класс</label>
+    <select id="class">
+      <option value="">Выбери класс</option>
+      <option value="fighter">Fighter</option>
+      <option value="wizard">Wizard</option>
+      <option value="rogue">Rogue</option>
+      <option value="cleric">Cleric</option>
+    </select>
+    
+    <label>Уровень</label>
+    <input type="number" id="level" value="1" min="1" max="20" />
+    
+    <button onclick="createCharacter()">Создать персонажа</button>
+  </div>
+  
+  <div id="output" class="result" style="display:none;"></div>
+  
+  <script>
+    function createCharacter() {
+      const character = {
+        name: document.getElementById('name').value || 'Unnamed',
+        class: document.getElementById('class').value || 'fighter',
+        level: parseInt(document.getElementById('level').value) || 1,
+        hp: 10,
+        ac: 12,
+        created: new Date().toISOString()
+      };
+      
+      document.getElementById('output').style.display = 'block';
+      document.getElementById('output').textContent = JSON.stringify(character, null, 2);
+    }
+  </script>
+</body>
+</html>
