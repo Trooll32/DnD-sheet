@@ -6,55 +6,147 @@
   <title>DnD Character Builder</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d1117; color: #c9d1d9; padding: 1rem; }
-    h1 { margin-bottom: 1rem; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d1117; color: #c9d1d9; padding: 1rem; max-width: 600px; margin: 0 auto; }
+    h1 { margin-bottom: 1.5rem; font-size: 1.75rem; }
     .step { background: #161b22; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid #30363d; }
-    label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
+    .step h2 { margin-bottom: 1rem; font-size: 1.25rem; color: #58a6ff; }
+    label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; }
     input, select { width: 100%; padding: 0.75rem; background: #0d1117; border: 1px solid #30363d; color: #c9d1d9; border-radius: 6px; font-size: 1rem; margin-bottom: 1rem; }
-    button { background: #238636; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; font-size: 1rem; cursor: pointer; width: 100%; margin-top: 0.5rem; }
+    input:focus, select:focus { outline: none; border-color: #58a6ff; }
+    .ability-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
+    .ability { text-align: center; }
+    .ability label { font-size: 0.75rem; text-transform: uppercase; }
+    .ability input { text-align: center; font-weight: bold; }
+    button { background: #238636; color: white; border: none; padding: 0.85rem 1.5rem; border-radius: 6px; font-size: 1rem; cursor: pointer; width: 100%; margin-top: 0.5rem; font-weight: 600; }
     button:hover { background: #2ea043; }
-    .result { background: #161b22; padding: 1.5rem; border-radius: 8px; border: 1px solid #30363d; white-space: pre-wrap; font-family: monospace; font-size: 0.9rem; }
+    .result { background: #161b22; padding: 1.5rem; border-radius: 8px; border: 1px solid #30363d; white-space: pre-wrap; font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 1.6; }
+    .summary { background: #1c2128; padding: 1rem; border-radius: 6px; margin-top: 1rem; border: 1px solid #30363d; }
+    .summary h3 { margin-bottom: 0.75rem; font-size: 1.1rem; color: #58a6ff; }
+    .summary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; font-size: 0.9rem; }
+    .summary-item { padding: 0.5rem; background: #0d1117; border-radius: 4px; }
+    .summary-item strong { color: #8b949e; display: block; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 0.25rem; }
   </style>
 </head>
 <body>
-  <h1>⚔️ DnD Character Builder v1</h1>
+  <h1>⚔️ DnD Character Builder</h1>
   
   <div class="step">
-    <h2>Создание персонажа</h2>
+    <h2>1. Основная информация</h2>
     <label>Имя персонажа</label>
-    <input type="text" id="name" placeholder="Aragorn" />
+    <input type="text" id="name" placeholder="Введите имя" />
     
     <label>Класс</label>
-    <select id="class">
-      <option value="">Выбери класс</option>
-      <option value="fighter">Fighter</option>
-      <option value="wizard">Wizard</option>
-      <option value="rogue">Rogue</option>
-      <option value="cleric">Cleric</option>
-    </select>
+    <select id="class"></select>
+    
+    <label>Раса</label>
+    <select id="species"></select>
+    
+    <label>Предыстория</label>
+    <select id="background"></select>
     
     <label>Уровень</label>
     <input type="number" id="level" value="1" min="1" max="20" />
-    
-    <button onclick="createCharacter()">Создать персонажа</button>
   </div>
+  
+  <div class="step">
+    <h2>2. Характеристики</h2>
+    <div class="ability-grid">
+      <div class="ability"><label>STR</label><input type="number" id="str" value="10" min="3" max="20" /></div>
+      <div class="ability"><label>DEX</label><input type="number" id="dex" value="10" min="3" max="20" /></div>
+      <div class="ability"><label>CON</label><input type="number" id="con" value="10" min="3" max="20" /></div>
+      <div class="ability"><label>INT</label><input type="number" id="int" value="10" min="3" max="20" /></div>
+      <div class="ability"><label>WIS</label><input type="number" id="wis" value="10" min="3" max="20" /></div>
+      <div class="ability"><label>CHA</label><input type="number" id="cha" value="10" min="3" max="20" /></div>
+    </div>
+  </div>
+  
+  <div class="summary" id="preview" style="display:none;">
+    <h3>Предпросмотр</h3>
+    <div class="summary-grid" id="preview-content"></div>
+  </div>
+  
+  <button onclick="createCharacter()">Создать персонажа</button>
   
   <div id="output" class="result" style="display:none;"></div>
   
-  <script>
-    function createCharacter() {
+  <script type="module">
+    import { CLASSES, SPECIES, BACKGROUNDS } from './src/engine/compendium.js';
+    
+    const classSelect = document.getElementById('class');
+    const speciesSelect = document.getElementById('species');
+    const backgroundSelect = document.getElementById('background');
+    
+    classSelect.innerHTML = '<option value="">Выбери класс</option>' + CLASSES.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+    speciesSelect.innerHTML = '<option value="">Выбери расу</option>' + SPECIES.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
+    backgroundSelect.innerHTML = '<option value="">Выбери предысторию</option>' + BACKGROUNDS.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
+    
+    function getMod(score) {
+      return Math.floor((score - 10) / 2);
+    }
+    
+    function getProfBonus(level) {
+      return Math.ceil(level / 4) + 1;
+    }
+    
+    const inputs = ['name', 'class', 'species', 'background', 'level', 'str', 'dex', 'con', 'int', 'wis', 'cha'];
+    inputs.forEach(id => {
+      document.getElementById(id).addEventListener('input', updatePreview);
+    });
+    
+    function updatePreview() {
+      const level = parseInt(document.getElementById('level').value) || 1;
+      const str = parseInt(document.getElementById('str').value) || 10;
+      const dex = parseInt(document.getElementById('dex').value) || 10;
+      const con = parseInt(document.getElementById('con').value) || 10;
+      const wis = parseInt(document.getElementById('wis').value) || 10;
+      
+      const pb = getProfBonus(level);
+      const ac = 10 + getMod(dex);
+      const init = getMod(dex);
+      const passivePerception = 10 + getMod(wis);
+      
+      const className = document.getElementById('class').value;
+      let hp = 8 + getMod(con);
+      if (className) {
+        const classData = CLASSES.find(c => c.name === className);
+        if (classData) {
+          const hitDie = parseInt(classData.hitDie.substring(1));
+          hp = hitDie + getMod(con);
+        }
+      }
+      
+      document.getElementById('preview-content').innerHTML = `
+        <div class="summary-item"><strong>HP</strong>${hp}</div>
+        <div class="summary-item"><strong>AC</strong>${ac}</div>
+        <div class="summary-item"><strong>Initiative</strong>+${init >= 0 ? init : init}</div>
+        <div class="summary-item"><strong>Prof. Bonus</strong>+${pb}</div>
+        <div class="summary-item"><strong>Passive Perception</strong>${passivePerception}</div>
+      `;
+      document.getElementById('preview').style.display = 'block';
+    }
+    
+    window.createCharacter = function() {
       const character = {
         name: document.getElementById('name').value || 'Unnamed',
-        class: document.getElementById('class').value || 'fighter',
+        class: document.getElementById('class').value,
+        species: document.getElementById('species').value,
+        background: document.getElementById('background').value,
         level: parseInt(document.getElementById('level').value) || 1,
-        hp: 10,
-        ac: 12,
+        abilities: {
+          str: parseInt(document.getElementById('str').value),
+          dex: parseInt(document.getElementById('dex').value),
+          con: parseInt(document.getElementById('con').value),
+          int: parseInt(document.getElementById('int').value),
+          wis: parseInt(document.getElementById('wis').value),
+          cha: parseInt(document.getElementById('cha').value)
+        },
         created: new Date().toISOString()
       };
       
       document.getElementById('output').style.display = 'block';
       document.getElementById('output').textContent = JSON.stringify(character, null, 2);
-    }
+      document.getElementById('output').scrollIntoView({ behavior: 'smooth' });
+    };
   </script>
 </body>
 </html>
