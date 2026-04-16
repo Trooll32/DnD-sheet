@@ -143,10 +143,7 @@
         created: new Date().toISOString()
       };
       
-      document.getElementById('output').style.display = 'block';
-      document.getElementById('output').textContent = JSON.stringify(character, null, 2);
-      document.getElementById('output').scrollIntoView({ behavior: 'smooth' });
-    };
-  </script>
+      localStorage.setItem('dnd-character', JSON.stringify(character));      document.getElementById('output').textContent = JSON.stringify(character, null, 2);
+      window.location.href = 'character.html';    };
 </body>
 </html>
